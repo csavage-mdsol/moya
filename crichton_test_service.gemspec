@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = CrichtonTestService::VERSION
   spec.authors       = ["Connor Savage"]
   spec.email         = ["csavage@mdsol.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{Write a short summary. Required.}
+  spec.description   = %q{Write a longer description. Optional.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -20,4 +20,16 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
+
+  # TODO: add dependencies on crichton and representors when hosted off git.
+  spec.add_dependency 'faraday'
+  spec.add_dependency "rails", '3.2'
+  spec.add_dependency "activesupport", '<= 4.0'
+  spec.add_dependency "rspec-rails", '2.99'
+  spec.add_dependency 'launchy'
+  spec.add_dependency 'sqlite3'
+  spec.add_dependency 'rack'
+  spec.add_dependency 'jquery-rails'
+  spec.add_dependency 'nokogiri'
+  spec.add_dependency 'yajl-ruby', '~> 1.2.0'
 end
