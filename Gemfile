@@ -5,4 +5,3 @@ gemspec
 
 gem 'crichton', git: 'git@github.com:mdsol/crichton.git', branch: 'develop'
 gem 'representors', git: 'git@github.com:mdsol/representors.git', branch: 'develop'
-gem 'faraday', git: 'git@github.com:mdsol/faraday.git', branch: 'develop'
