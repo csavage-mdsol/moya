@@ -21,8 +21,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
 
-  # TODO: add dependencies on crichton and representors when hosted off git.
+  # TODO: add dependencies on Crichton and Representors when hosted off git.
   spec.add_dependency 'faraday'
+
+  # These dependencies need to include the gems listed in the rails project Gemfile.
+  # TODO: make it clear in README.md that this gem should only be listed as a development dependency
   spec.add_dependency "rails", '3.2'
   spec.add_dependency "activesupport", '<= 4.0'
   spec.add_dependency "rspec-rails", '2.99'
