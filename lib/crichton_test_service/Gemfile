@@ -20,6 +20,10 @@ gem 'nokogiri'
 gem 'yajl-ruby'
 gem 'faraday'
 
+group :test, :development do
+  gem 'debugger',       '~> 1.6.4'
+end
+
 group :test do
   gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'

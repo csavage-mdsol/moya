@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.1'
   spec.add_development_dependency 'rspec-rails', '~> 3.1'
+  spec.add_development_dependency 'faraday'
+  spec.add_development_dependency 'pry'
 
   # TODO: add dependencies on Crichton and Representors when hosted off git.
   # TODO: make it clear in README.md that this gem should only be listed as a development dependency
