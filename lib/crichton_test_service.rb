@@ -2,15 +2,17 @@ require "crichton_test_service/version"
 
 module CrichtonTestService
 
+
+  # Initialize rails in the development environment.
   def self.initialize_rails!
-    require File.dirname(__FILE__) << "/crichton_test_service/config/environment"
+    require File.dirname(__FILE__) << "/crichton_test_service/config/environment/development.rb"
   end
 
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
   # Waits
   def self.spawn_rails_process!(port = 3000)
     rails_root = File.dirname(__FILE__) << '/crichton_test_service'
-    Dir.chdir(rails_root) { system('bundle exec rake setup') }
+    Dir.chdir(rails_root) { system(env_vars_hash(port), 'bundle exec rake setup') }
     pid = Process.spawn("bundle exec rails server --port #{port}", chdir: "#{rails_root}")
     wait_for_response!("http://localhost:#{port}")
     pid
@@ -27,7 +29,17 @@ module CrichtonTestService
       connection.get('/')
     rescue Faraday::Error::ConnectionFailed
       sleep 1
-      retry if (i += 1)  < 30
+      retry if (i += 1)  <= 30
     end
+  end
+
+  def self.env_vars_hash(port)
+    localhost = "http://localhost:#{port}"
+    {
+      "ALPS_BASE_URI" => "#{localhost}/alps",
+      "DEPLOYMENT_BASE_URI" => localhost,
+      "DISCOVERY_BASE_URI" => localhost,
+      "CRICHTON_PROXY_BASE_URI" => "#{localhost}/crichton"
+    }
   end
 end
