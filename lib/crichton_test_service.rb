@@ -5,7 +5,7 @@ module CrichtonTestService
 
   # Initialize rails in the development environment.
   def self.initialize_rails!
-    require File.dirname(__FILE__) << "/crichton_test_service/config/environment/development.rb"
+    require File.dirname(__FILE__) << "/crichton_test_service/config/environment"
   end
 
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
@@ -13,9 +13,10 @@ module CrichtonTestService
   def self.spawn_rails_process!(port = 3000)
     rails_root = File.dirname(__FILE__) << '/crichton_test_service'
     Dir.chdir(rails_root) { system(env_vars_hash(port), 'bundle exec rake setup') }
-    pid = Process.spawn("bundle exec rails server --port #{port}", chdir: "#{rails_root}")
+    @pid = Process.spawn("bundle exec rails server --port #{port}", chdir: "#{rails_root}")
     wait_for_response!("http://localhost:#{port}")
-    pid
+  ensure
+    return @pid
   end
 
   private
@@ -29,7 +30,7 @@ module CrichtonTestService
       connection.get('/')
     rescue Faraday::Error::ConnectionFailed
       sleep 1
-      retry if (i += 1)  <= 30
+      (i += 1)  < 30 ? retry : raise
     end
   end
 
