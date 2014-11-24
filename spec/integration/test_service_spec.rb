@@ -12,7 +12,7 @@ RSpec.describe CrichtonTestService do
       }
       @rails_pid = CrichtonTestService.spawn_rails_process!(port = 1234)
     end
-    after(:all) { Process.kill(:INT, @rails_pid) }
+    after(:all) { Process.kill(:INT, @rails_pid) if @rails_pid }
 
     let(:conn) { Faraday.new(ROOT_URL) }
 
