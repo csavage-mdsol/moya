@@ -33,10 +33,11 @@ config.after(:suite) do
   Process.kill(:INT, $crichton_test_service_rails_pid)
 end
 ```
-This code in a ``` before(:suite) ``` hook first captures the old behavior for handling INT, ensures
-that the process is killed, and then proceeds with the original behavior.  The rails pid is returned
-by the call to ``` spawn_rails_process! ```, which spins up a non blocking rails process
-using ``` Process.spawn ```.  The ``` after(:suite) ``` hook cleans up for
+This code in a ``` before(:suite) ``` hook first captures the old behavior for handling INT
+( the SIGINT signal is sent to a process by its controlling terminal when a user wishes to interrupt
+the process), ensures that the process is killed, and then proceeds with the original behavior.  
+The rails pid is returned by the call to ``` spawn_rails_process! ```, which spins up a non blocking
+rails process using ``` Process.spawn ```.  The ``` after(:suite) ``` hook cleans up for
 the ``` before(:suite) ```, terminating the background rails process.  The service will be live and
 consumable between the execution of these two hooks.
 
