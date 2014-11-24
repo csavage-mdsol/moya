@@ -1,6 +1,6 @@
 require 'pry'
 
-ROOT_URL = "http://localhost:3000"
+ROOT_URL = "http://localhost:1234"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
