@@ -9,7 +9,6 @@ module CrichtonTestService
   end
 
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
-  # Waits
   def self.spawn_rails_process!(port = 3000)
     rails_root = File.dirname(__FILE__) << '/crichton_test_service'
     Dir.chdir(rails_root) { system(env_vars_hash(port), 'bundle exec rake setup') }
