@@ -10,7 +10,7 @@ RSpec.describe CrichtonTestService do
         Process.kill(:INT, @rails_pid) if @rails_pid
         old_handler.call if old_handler.respond_to?(:call)
       }
-      @rails_pid = CrichtonTestService.spawn_rails_process!
+      @rails_pid = CrichtonTestService.spawn_rails_process!(port = 1234)
     end
     after(:all) { Process.kill(:INT, @rails_pid) }
 
