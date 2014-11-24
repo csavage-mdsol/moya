@@ -6,9 +6,9 @@ require 'crichton_test_service/version'
 Gem::Specification.new do |spec|
   spec.name          = "crichton_test_service"
   spec.version       = CrichtonTestService::VERSION
-  spec.authors       = ["Connor Savage"]
-  spec.email         = ["csavage@mdsol.com"]
-  spec.summary       = %q{Write a short summary. Required.}
+  spec.authors       = ["Connor Savage", "Shea Valentine"]
+  spec.email         = ["csavage@mdsol.com", "svalentine@mdsol.com"]
+  spec.summary       = %q{Exposes methods for launching the Crichton Demo Service as a background process, or requiring its files, for the purposes of testing}
   spec.description   = %q{Write a longer description. Optional.}
   spec.homepage      = ""
   spec.license       = "MIT"
