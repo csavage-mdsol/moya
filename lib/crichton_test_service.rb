@@ -2,6 +2,10 @@ require "crichton_test_service/version"
 
 module CrichtonTestService
 
+  def self.initialize_rails!
+    require File.dirname(__FILE__) << "/crichton_test_service/config/environment"
+  end
+
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
   # Waits
   def self.spawn_rails_process!(port = 3000)
