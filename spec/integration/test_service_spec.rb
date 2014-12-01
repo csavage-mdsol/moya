@@ -1,4 +1,5 @@
 require 'faraday'
+require 'json'
 require 'crichton_test_service'
 
 RSpec.describe CrichtonTestService do
@@ -23,6 +24,16 @@ RSpec.describe CrichtonTestService do
 
     it 'responds to an index call' do
       expect(conn.get('/drds.hale_json').status).to eq(200)
+    end
+
+    it 'includes transitions when conditions are met' do
+      response = conn.get('/drds.hale_json', { conditions: ["can_create"] })
+      expect(JSON.parse(response.body)["_links"]).to have_key("create")
+    end
+
+    it 'filters out available transitions for unmet conditions' do
+      response = conn.get('/drds.hale_json', { conditions: [] })
+      expect(JSON.parse(response.body)["_links"]).to_not have_key("create")
     end
 
     xit 'responds to a show call' do
