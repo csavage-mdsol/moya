@@ -1,6 +1,17 @@
 class DrdsController < ApplicationController
-  respond_to(:html, :xhtml, :hale_json, :hal_json)
-  
+  respond_to(:hale_json, :hal_json)
+
+  OPTIONS_KEYS = [ :conditions,
+                   :except,
+                   :only,
+                   :include,
+                   :exclude,
+                   :embed_optional,
+                   :additional_links,
+                   :override_links,
+                   :state
+                  ]
+
   def show
     @drd = Drd.find_by_uuid(params[:id])
     if @drd.nil?
@@ -14,7 +25,7 @@ class DrdsController < ApplicationController
       respond_with(@drd, options)
     end
   end
-  
+
   def index
     if (params[:search_term] == 'search')
       error = Error.new({ title: 'Not supported search term',
@@ -28,7 +39,7 @@ class DrdsController < ApplicationController
       respond_with(@drds, options)
     end
   end
-  
+
   def create
     @drd = Drd.new(drd_params)
     if @drd.save
@@ -37,23 +48,23 @@ class DrdsController < ApplicationController
       raise @drd.errors.full_messages
     end
   end
-  
+
   def update
     @drd = Drd.find_by_uuid(params[:id])
-    
+
     if @drd.update_attributes(drd_params)
       respond_with(@drd, options)
     else
       raise @drd.errors.full_messages
     end
   end
-  
+
   def destroy
     @drd = Drd.find_by_uuid(params[:id])
     @drd.destroy
     respond_with(@drd, options)
   end
-  
+
   def activate
     transition
   end
@@ -61,9 +72,9 @@ class DrdsController < ApplicationController
   def deactivate
     transition
   end
-  
+
   private
-  
+
   def transition
     @drd = Drd.find_by_uuid(params[:id])
 
@@ -77,8 +88,9 @@ class DrdsController < ApplicationController
   def drd_params
     params.slice(:name, :leviathan_uuid, :kind).reject { |_, v| v.blank? }
   end
-  
+
+  # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   def options
-    (conditions = params[:conditions]) ? {conditions: conditions.split(',').map(&:strip)} : {}
+    params.slice(*OPTIONS_KEYS).symbolize_keys
   end
 end
