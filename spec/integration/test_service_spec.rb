@@ -6,6 +6,7 @@ RSpec.describe CrichtonTestService do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
   # rails process for each one.
   context "When the service is running" do
+    #Start up the service and ensure INT kills the service
     before(:all) do
       old_handler = trap(:INT) {
         Process.kill(:INT, @rails_pid) if @rails_pid
@@ -17,7 +18,19 @@ RSpec.describe CrichtonTestService do
 
     let(:conn) { Faraday.new(ROOT_URL) }
 
-    # Start up the service, and ensure INT also kills the service
+    # We do this here because with an app already running, the method will return
+    # false instead of actually spinning up a rails app.
+    it 'spins up a rails app' do
+      env_vars = { "ALPS_BASE_URI"=>"http://localhost:3000/alps",
+                   "DEPLOYMENT_BASE_URI"=>"http://localhost:3000",
+                   "DISCOVERY_BASE_URI"=>"http://localhost:3000",
+                   "CRICHTON_PROXY_BASE_URI"=>"http://localhost:3000/crichton"
+                  }
+      expect(CrichtonTestService).to receive('system').with(env_vars, 'bundle exec rake setup')
+      expect(CrichtonTestService).to receive('system').with(env_vars, 'bundle exec rails server --port 3000')
+      CrichtonTestService.spin_up_rails_app!
+    end
+
     it 'responds to root' do
       expect(conn.get('/').status).to eq(200)
     end
