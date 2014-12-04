@@ -1,9 +1,9 @@
 # CrichtonTestService
 
-Crichton Test Service is a gem intended to show basic API functionality for a Rails project using the [Crichton](https://github.com/mdsol/crichton) Gem as its API dispatcher.  It allows for testing Hypermedia Clients, Hypermedia Formats, and Ad-Hoc testing.
+Crichton Test Service is a gem intended to show basic API functionality for a Rails project using the [Crichton](https://github.com/mdsol/crichton) Gem as its API dispatcher.  It helps support automated and ad-hoc testing of hypermedia-related gems.
 
 ## API Objects
-The API contains a resource called "DRDs" which is a collection of "DRD" objects. DRD stands for Diagnostic and Repair Drone.  These objects support basic CRUD operations.  Included is "leviathon" links, which represents linking to outside resources.  Currently these are fake links, however a future iteration will spin up a second service which serves these resources as well.
+The API contains a resource called "DRDs" which is a collection of "DRD" objects. DRD stands for Diagnostic and Repair Drone.  These objects support basic CRUD operations.  Included is "leviathan" links, which represents linking to outside resources.  Currently these are fake links, however a future iteration will spin up a second service which serves these resources as well.
 
 ## Installation
 
@@ -26,7 +26,7 @@ A common usage pattern for this gem will be including code like the following in
 ```ruby
 require 'crichton_test_service'
 
-RAILS_PORT = 8080 # Set the Port that rails to talk to 
+RAILS_PORT = 8080 # Set the port at which the service can be accessed
 
 config.before(:suite) do
   old_handler = trap(:INT) { # Unix Signal Handler
