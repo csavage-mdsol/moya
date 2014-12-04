@@ -5,6 +5,8 @@ require 'crichton_test_service'
 RSpec.describe CrichtonTestService do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
   # rails process for each one.
+  let(:conn) { Faraday.new(ROOT_URL) }
+
   context "When the service is running" do
     before(:all) do
       old_handler = trap(:INT) {
@@ -14,8 +16,6 @@ RSpec.describe CrichtonTestService do
       @rails_pid = CrichtonTestService.spawn_rails_process!(port = 1234)
     end
     after(:all) { Process.kill(:INT, @rails_pid) if @rails_pid }
-
-    let(:conn) { Faraday.new(ROOT_URL) }
 
     # Start up the service, and ensure INT also kills the service
     it 'responds to root' do
@@ -55,4 +55,11 @@ RSpec.describe CrichtonTestService do
     end
   end
 
+  context 'when provided an initializer directory' do
+    it 'executes the initialization code' do
+      pid = CrichtonTestService.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
+      expect(conn.get('/').body).to eq("Alive!")
+      Process.kill(:INT, pid)
+    end
+  end
 end
