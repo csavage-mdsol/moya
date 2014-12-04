@@ -9,10 +9,11 @@ module CrichtonTestService
   end
 
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
-  def self.spawn_rails_process!(port = 3000)
+  def self.spawn_rails_process!(port = 3000, initializer_directory = nil)
     rails_root = File.dirname(__FILE__) << '/crichton_test_service'
-    Dir.chdir(rails_root) { system(env_vars_hash(port), 'bundle exec rake setup') }
-    @pid = Process.spawn("bundle exec rails server --port #{port}", chdir: "#{rails_root}")
+    env_vars = env_vars_hash(port, initializer_directory)
+    Dir.chdir(rails_root) { system(env_vars, 'bundle exec rake setup') }
+    @pid = Process.spawn(env_vars, "bundle exec rails server --port #{port}", chdir: "#{rails_root}")
     wait_for_response!("http://localhost:#{port}")
   ensure
     return @pid
@@ -33,13 +34,14 @@ module CrichtonTestService
     end
   end
 
-  def self.env_vars_hash(port)
+  def self.env_vars_hash(port, initializer_directory)
     localhost = "http://localhost:#{port}"
     {
       "ALPS_BASE_URI" => "#{localhost}/alps",
       "DEPLOYMENT_BASE_URI" => localhost,
       "DISCOVERY_BASE_URI" => localhost,
-      "CRICHTON_PROXY_BASE_URI" => "#{localhost}/crichton"
+      "CRICHTON_PROXY_BASE_URI" => "#{localhost}/crichton",
+      "INITIALIZER_DIRECTORY" => initializer_directory
     }
   end
 end
