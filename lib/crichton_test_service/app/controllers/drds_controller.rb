@@ -15,7 +15,7 @@ class DrdsController < ApplicationController
   def show
     @drd = Drd.find_by_uuid(params[:id])
     if @drd.nil?
-      error = Error.new({ title: 'Item not found',
+      error = HyperError.new({ title: 'Item not found',
                           error_code: :item_not_found,
                           http_status: 404,
                           details: "The item with id #{params[:id]} could not be found",
@@ -28,7 +28,7 @@ class DrdsController < ApplicationController
 
   def index
     if (params[:search_term] == 'search')
-      error = Error.new({ title: 'Not supported search term',
+      error = HyperError.new({ title: 'Not supported search term',
                           error_code: :search_term_is_not_supported,
                           http_status: 422,
                           details: 'You requested search but it is not a valid search_term',
