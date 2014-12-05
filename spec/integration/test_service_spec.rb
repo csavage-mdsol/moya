@@ -24,6 +24,7 @@ RSpec.describe CrichtonTestService do
         response_body = conn.get('/drds.hale_json', conditions: ["can_do_anything"]).body
         Representors::HaleDeserializer.new(response_body).to_representor
       end
+      let(:create_url) { "#{drds.transitions.find { |tran| tran.rel == "create" }.uri}.hale_json" }
 
       it 'responds appropriately to root' do
         expect(conn.get('/').status).to eq(200)
@@ -49,12 +50,17 @@ RSpec.describe CrichtonTestService do
       end
 
       it 'responds appropriately to a drd create call specifying name' do
-        create_url = drds.transitions.find { |tran| tran.rel == "create" }.uri
-        response = conn.post("#{create_url}.hale_json", {name: 'Pike'})
+        response = conn.post(create_url, {name: 'Pike'})
         expect(response.status).to eq(201)
         drd = Representors::HaleDeserializer.new(response.body).to_representor
         self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
         expect(conn.get(self_url).status).to eq(200)
+      end
+
+      # TODO: fix this, it is responding 201
+      xit 'responds with an error to a drd create call not specifying a name' do
+        response = conn.post create_url, {}
+        expect(response.status).to eq(422)
       end
 
       xit 'responds to an update call' do
