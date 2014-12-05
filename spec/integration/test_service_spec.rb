@@ -25,11 +25,11 @@ RSpec.describe CrichtonTestService do
         Representors::HaleDeserializer.new(response_body).to_representor
       end
 
-      it 'responds to root' do
+      it 'responds appropriately to root' do
         expect(conn.get('/').status).to eq(200)
       end
 
-      it 'responds to an index call' do
+      it 'responds appropriately to a drd index call' do
         expect(conn.get('/drds.hale_json').status).to eq(200)
       end
 
@@ -43,12 +43,18 @@ RSpec.describe CrichtonTestService do
         expect(JSON.parse(response.body)["_links"]).to_not have_key("create")
       end
 
-      it 'responds to a show call' do
+      it 'responds appropriately to a drd show call' do
         show_url = drds.transitions.find { |tran| tran.rel == "items" }.uri
         expect(conn.get("#{show_url}.hale_json").status).to eq(200)
       end
 
-      xit 'responds to a create call' do
+      it 'responds appropriately to a drd create call specifying name' do
+        create_url = drds.transitions.find { |tran| tran.rel == "create" }.uri
+        response = conn.post("#{create_url}.hale_json", {name: 'Pike'})
+        expect(response.status).to eq(201)
+        drd = Representors::HaleDeserializer.new(response.body).to_representor
+        self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
+        expect(conn.get(self_url).status).to eq(200)
       end
 
       xit 'responds to an update call' do
