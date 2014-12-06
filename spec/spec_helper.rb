@@ -1,4 +1,5 @@
 require 'pry'
+require 'moya'
 
 ROOT_URL = "http://localhost:1234"
 SPEC_DIR = File.expand_path("..", __FILE__)

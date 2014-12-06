@@ -1,8 +1,7 @@
 require 'faraday'
 require 'json'
-require 'crichton_test_service'
 
-RSpec.describe CrichtonTestService do
+RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
   # rails process for each one.
   let(:conn) { Faraday.new(ROOT_URL) }
@@ -13,7 +12,7 @@ RSpec.describe CrichtonTestService do
         Process.kill(:INT, @rails_pid) if @rails_pid
         old_handler.call if old_handler.respond_to?(:call)
       }
-      @rails_pid = CrichtonTestService.spawn_rails_process!(port = 1234)
+      @rails_pid = Moya.spawn_rails_process!(port = 1234)
     end
     after(:all) { Process.kill(:INT, @rails_pid) if @rails_pid }
 
