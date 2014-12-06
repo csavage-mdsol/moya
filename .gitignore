@@ -23,3 +23,4 @@ tmp
 development.log
 mkmf.log
 lib/crichton_test_service/config/crichton.yml
+tags/
