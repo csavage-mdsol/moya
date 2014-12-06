@@ -1,7 +1,6 @@
 require "crichton_test_service/version"
 
-module CrichtonTestService
-
+module Moya
 
   # Initialize rails in the development environment.
   def self.initialize_rails!
