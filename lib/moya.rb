@@ -1,15 +1,15 @@
-require "crichton_test_service/version"
+require "moya/version"
 
 module Moya
 
   # Initialize rails in the development environment.
   def self.initialize_rails!
-    require File.dirname(__FILE__) << "/crichton_test_service/config/environment"
+    require File.dirname(__FILE__) << "/moya/config/environment"
   end
 
   # Uses Process.spawn to setup and spin up the crichton demo service rails server
   def self.spawn_rails_process!(port = 3000, initializer_directory = nil)
-    rails_root = File.dirname(__FILE__) << '/crichton_test_service'
+    rails_root = File.dirname(__FILE__) << '/moya'
     env_vars = env_vars_hash(port, initializer_directory)
     Dir.chdir(rails_root) { system(env_vars, 'bundle exec rake setup') }
     @pid = Process.spawn(env_vars, "bundle exec rails server --port #{port}", chdir: "#{rails_root}")
