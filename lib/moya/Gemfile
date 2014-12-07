@@ -27,6 +27,10 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
+gem 'crichton', git: 'git@github.com:mdsol/crichton.git', branch: '0-1-stable' #FIXME
+
+gem 'representors', git: 'git@github.com:mdsol/representors.git', branch: '0-0-stable' #FIXME
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
