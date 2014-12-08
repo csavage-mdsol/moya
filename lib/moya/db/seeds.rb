@@ -3,11 +3,11 @@
 
 5.times do |i|
   Drd.create!(
-  uuid: SecureRandom.uuid,
-  name: "Pike#{i}",
-  status: Random.rand(2) > 0 ? 'activated' : 'deactivated',
-  kind: Random.rand(2) > 0 ? 'standard' : 'sentinel',
-  leviathan_uuid: leviathan_uuid = SecureRandom.uuid,
-  leviathan_url: "http://farscape.example.org/leviathan/#{leviathan_uuid}"
+    uuid: SecureRandom.uuid,
+    name: "Pike#{i}",
+    status: Random.rand(2) > 0 ? 'activated' : 'deactivated',
+    kind: Random.rand(2) > 0 ? 'standard' : 'sentinel',
+    leviathan_uuid: leviathan_uuid = SecureRandom.uuid,
+    leviathan_url: "http://farscape.example.org/leviathan/#{leviathan_uuid}"
   )
 end
