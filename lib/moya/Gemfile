@@ -33,6 +33,8 @@ gem 'representors', git: 'git@github.com:mdsol/representors.git', branch: '0-0-s
 
 gem 'dice_bag', '~> 0.8'
 
+gem 'activeuuid', '~> 0.5'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
