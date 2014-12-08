@@ -1,3 +1,5 @@
+require 'drds_decorator'
+
 class DrdsController < ApplicationController
   respond_to :hale_json
 
@@ -13,12 +15,19 @@ class DrdsController < ApplicationController
   ]
 
   def index
-    @drds = Drds.find(params[:search_term])
-    respond_with(@drds, options)
+    @drds = Drd.where(nil) # create anonymous scope
+
+    filtering_params(params).each do |k,v|
+      @drds = @drds.public_sent(key, value) if value.present?
+    end
+
+    decorator = DrdsDecorator.new(@drds, self)
+
+    respond_with(decorator.value, decorator.options.merge(options))
   end
 
   def show
-    @drd = Drd.find_by_uuid!(params[:id])
+    @drd = Drd.find(params[:id])
     respond_with(@drd, options)
   end
 
@@ -27,6 +36,10 @@ class DrdsController < ApplicationController
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   def options
     params.slice(*OPTIONS_KEYS).symbolize_keys
+  end
+
+  def filtering_params(params)
+    params.slice(:status)
   end
 
 end
