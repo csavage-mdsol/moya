@@ -11,17 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141207003941) do
+ActiveRecord::Schema.define(version: 20141208231338) do
 
-  create_table "drds", id: false, force: true do |t|
-    t.string   "uuid",           limit: 36
+  create_table "drds", force: true do |t|
     t.string   "name"
     t.string   "status"
     t.string   "kind"
-    t.string   "leviathan_uuid"
+    t.uuid     "leviathan_uuid"
     t.string   "leviathan_url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "drds", ["id"], name: "sqlite_autoindex_drds_1", unique: true
 
 end
