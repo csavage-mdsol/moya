@@ -3,7 +3,6 @@
 
 5.times do |i|
   Drd.create!(
-    uuid: SecureRandom.uuid,
     name: "Pike#{i}",
     status: Random.rand(2) > 0 ? 'activated' : 'deactivated',
     kind: Random.rand(2) > 0 ? 'standard' : 'sentinel',
