@@ -11,9 +11,15 @@ module Moya
   def self.spawn_rails_process!(port = 3000, initializer_directory = nil)
     rails_root = File.dirname(__FILE__) << '/moya'
     env_vars = env_vars_hash(port, initializer_directory)
-    Dir.chdir(rails_root) { system(env_vars, 'bundle exec rake setup') }
+
+    Dir.chdir(rails_root) do
+      system(env_vars, 'bundle exec rake config')
+      system(env_vars, 'bundle exec rake db:setup')
+    end
+
     @pid = Process.spawn(env_vars, "bundle exec rails server --port #{port}", chdir: "#{rails_root}")
     wait_for_response!("http://localhost:#{port}")
+
   ensure
     return @pid
   end
