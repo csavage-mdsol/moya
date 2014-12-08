@@ -1,8 +1,8 @@
 class Drd < ActiveRecord::Base
   include UUIDPrimaryKey
-  #include Crichton::Representor::State
-  #represents :drd
-  #state_method :status
+  include Crichton::Representor::State
+  represents :drd
+  state_method :status
 
   validates :name, :status, presence: true
 
