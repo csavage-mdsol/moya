@@ -31,6 +31,8 @@ gem 'crichton', git: 'git@github.com:mdsol/crichton.git', branch: '0-1-stable' #
 
 gem 'representors', git: 'git@github.com:mdsol/representors.git', branch: '0-0-stable' #FIXME
 
+gem 'dice_bag', '~> 0.8'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
