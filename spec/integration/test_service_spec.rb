@@ -56,7 +56,7 @@ RSpec.describe Moya do
 
   context 'when provided an initializer directory' do
     it 'executes the initialization code' do
-      pid = CrichtonTestService.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
+      pid = Moya.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
       expect(conn.get('/').body).to eq("Alive!")
       Process.kill(:INT, pid)
     end
