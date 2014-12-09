@@ -21,7 +21,7 @@ class DrdsController < ApplicationController
       @drds = @drds.public_send(key, value) if value.present?
     end
 
-    # TODO: Should this be fixed in Crichton?
+    # TODO: Fix this in Crichton.
     #       Crichton is blowing up when receiving ActiveRecord::Relation s
     decorator = DrdsDecorator.new(@drds.to_a, self)
 
