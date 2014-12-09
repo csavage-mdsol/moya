@@ -15,10 +15,10 @@ class DrdsController < ApplicationController
   ]
 
   def index
-    @drds = Drd.where(nil) # create anonymous scope
+    @drds = Drd.where(nil)
 
     filtering_params(params).each do |k,v|
-      @drds = @drds.public_sent(key, value) if value.present?
+      @drds = @drds.public_send(key, value) if value.present?
     end
 
     decorator = DrdsDecorator.new(@drds, self)
@@ -27,7 +27,9 @@ class DrdsController < ApplicationController
   end
 
   def show
-    @drd = Drd.find(params[:id])
+    #TODO Fix this.  Gross.
+    @drd = Drd.find(UUIDTools::UUID.parse(params[:id]))
+
     respond_with(@drd, options)
   end
 
