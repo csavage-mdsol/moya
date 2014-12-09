@@ -15,15 +15,17 @@ class DrdsController < ApplicationController
   ]
 
   def index
-    @drds = Drd.where(nil)
+    @drds = Drd.all
 
     filtering_params(params).each do |k,v|
       @drds = @drds.public_send(key, value) if value.present?
     end
 
-    decorator = DrdsDecorator.new(@drds, self)
+    # TODO: Should this be fixed in Crichton?
+    #       Crichton is blowing up when receiving ActiveRecord::Relation s
+    decorator = DrdsDecorator.new(@drds.to_a, self)
 
-    respond_with(decorator.value, decorator.options.merge(options))
+    respond_with(decorator.value, options)
   end
 
   def show
