@@ -7,14 +7,18 @@ module Moya
     require File.dirname(__FILE__) << "/moya/config/environment"
   end
 
-  # Uses Process.spawn to setup and spin up the crichton demo service rails server
+  # Uses Process.spawn to setup and spin up the moya service rails server
   def self.spawn_rails_process!(port = 3000, initializer_directory = nil)
     rails_root = File.dirname(__FILE__) << '/moya'
     env_vars = env_vars_hash(port, initializer_directory)
 
     Dir.chdir(rails_root) do
-      system(env_vars, 'bundle exec rake config')
-      system(env_vars, 'bundle exec rake db:setup')
+      [ 'bundle exec rake config',
+        'bundle exec rake db:drop',
+        'bundle exec rake db:create',
+        'bundle exec rake db:migrate',
+        'bundle exec rake db:seed'
+      ].each { |str| system(env_vars, str)}
     end
 
     @pid = Process.spawn(env_vars, "bundle exec rails server --port #{port}", chdir: "#{rails_root}")
