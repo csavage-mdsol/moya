@@ -22,4 +22,5 @@ tmp
 *.sqlite3
 development.log
 mkmf.log
-lib/crichton_test_service/config/crichton.yml
+lib/moya/config/crichton.yml
+tags/

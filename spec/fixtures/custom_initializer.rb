@@ -12,6 +12,6 @@ module Rack
   end
 end
 
-config = CrichtonDemoService::Application.config
+config = Moya::Application.config
 # Crichton will hijack calls to root if you don't insert yourself above it
 config.middleware.insert_after Rack::Lock, Rack::FakeResponder
