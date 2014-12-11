@@ -7,6 +7,16 @@ RSpec.describe Moya do
   # rails process for each one.
   let(:conn) { Faraday.new(ROOT_URL) }
 
+  let(:drd_hash) {
+    { drd: { name: 'Pike',
+             status: 'activated',
+             kind: 'Roll-e',
+             leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
+             leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
+           }
+    }
+  }
+
   context "When the service is running" do
     context "When requesting hale json" do
       before(:all) do
@@ -48,17 +58,27 @@ RSpec.describe Moya do
         expect(conn.get("#{show_url}.hale_json").status).to eq(200)
       end
 
-      it 'responds appropriately to a drd create call specifying name' do
+      it 'responds appropriately to a drd create call specifying only name and status' do
         response = conn.post do |req|
           req.url create_url
           req.body = { drd: {name: 'Pike', status: 'activated'} }
         end
-
         expect(response.status).to eq(201)
 
         drd = Representors::HaleDeserializer.new(response.body).to_representor
         self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
+        expect(conn.get(self_url).status).to eq(200)
+      end
 
+      it 'responds appropriately to a drd create call specifying all permissible attributes' do
+        response = conn.post do |req|
+          req.url create_url
+          req.body = drd_hash
+        end
+        expect(response.status).to eq(201)
+
+        drd = Representors::HaleDeserializer.new(response.body).to_representor
+        self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
         expect(conn.get(self_url).status).to eq(200)
       end
 
