@@ -49,10 +49,16 @@ RSpec.describe Moya do
       end
 
       it 'responds appropriately to a drd create call specifying name' do
-        response = conn.post(create_url, {name: 'Pike'})
+        response = conn.post do |req|
+          req.url create_url
+          req.body = { drd: {name: 'Pike', status: 'activated'} }
+        end
+
         expect(response.status).to eq(201)
+
         drd = Representors::HaleDeserializer.new(response.body).to_representor
         self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
+
         expect(conn.get(self_url).status).to eq(200)
       end
 
