@@ -5,18 +5,6 @@ require 'representors'
 RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
   # rails process for each one.
-  let(:conn) { Faraday.new(ROOT_URL) }
-
-  let(:drd_hash) {
-    { drd: { name: 'Pike',
-             status: 'activated',
-             kind: 'Roll-e',
-             leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
-             leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
-           }
-    }
-  }
-
   context "When the service is running" do
     context "When requesting hale json" do
       before(:all) do
@@ -28,28 +16,33 @@ RSpec.describe Moya do
       end
       after(:all) { Process.kill(:INT, @rails_pid) if @rails_pid }
 
-      let(:conn) { Faraday.new(ROOT_URL) }
-      let(:drds) do
-        response_body = conn.get('/drds.hale_json', conditions: ["can_do_anything"]).body
-        Representors::HaleDeserializer.new(response_body).to_representor
-      end
-      let(:create_url) { "#{drds.transitions.find { |tran| tran.rel == "create" }.uri}.hale_json" }
+      let(:can_do_hash) { {conditions: ['can_do_anything']} }
+      let(:create_url) { "#{get_transition_uri(drds, 'create')}.hale_json" }
+      let(:drd_hash) {
+          { drd: { name: 'Pike',
+            status: 'activated',
+            kind: 'Roll-e',
+            leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
+            leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
+          }
+        }
+      }
 
       it 'responds appropriately to root' do
-        expect(conn.get('/').status).to eq(200)
+        expect(get('/').status).to eq(200)
       end
 
       it 'responds appropriately to a drd index call' do
-        expect(conn.get('/drds.hale_json').status).to eq(200)
+        expect(get('/drds.hale_json').status).to eq(200)
       end
 
       it 'includes transitions when conditions are met' do
-        response = conn.get('/drds.hale_json', { conditions: ["can_create"] })
+        response = get('/drds.hale_json', { conditions: ["can_create"] })
         expect(JSON.parse(response.body)["_links"]).to have_key("create")
       end
 
       it 'filters out available transitions for unmet conditions' do
-        response = conn.get('/drds.hale_json', { conditions: [] })
+        response = get('/drds.hale_json', { conditions: [] })
         expect(JSON.parse(response.body)["_links"]).to_not have_key("create")
       end
 
@@ -59,22 +52,17 @@ RSpec.describe Moya do
       end
 
       it 'responds appropriately to a drd create call specifying only name and status' do
-        response = conn.post do |req|
-          req.url create_url
-          req.body = { drd: {name: 'Pike', status: 'activated'} }
-        end
+        response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
+
         expect(response.status).to eq(201)
 
-        drd = Representors::HaleDeserializer.new(response.body).to_representor
+        drd = parse_hale(response.body)
         self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
         expect(conn.get(self_url).status).to eq(200)
       end
 
       it 'responds appropriately to a drd create call specifying all permissible attributes' do
-        response = conn.post do |req|
-          req.url create_url
-          req.body = drd_hash
-        end
+        response = post(create_url, drd_hash)
         expect(response.status).to eq(201)
 
         drd = Representors::HaleDeserializer.new(response.body).to_representor
@@ -94,10 +82,52 @@ RSpec.describe Moya do
       xit 'responds to a destroy call' do
       end
 
-      xit 'responds to an activate call' do
+      it 'responds idempotently to an activate call' do
+        # Create deactivated drd
+        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
+                     conditions: ['can_do_anything']
+                   }
+        response = post(create_url, req_body)
+
+        # Get the activate URL
+        drd = parse_hale(response.body)
+        activate_url = "#{get_transition_uri(drd, "activate")}.hale_json"
+
+        # Activate twice.
+        put activate_url
+        response = put activate_url
+        expect(response.status).to eq(204)
+
+        # Verify
+        response = get "#{get_transition_uri(drd, "self")}.hale_json", can_do_hash
+        expect(parse_hale(response.body).properties['status']).to eq('activated')
+
+        # Destroy our drd
+        delete "#{get_transition_uri(drd, "delete")}.hale_json"
       end
 
-      xit 'responds to a deactivate call' do
+      it 'responds idempotently to a deactivate call' do
+        # Create deactivated drd
+        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'Roll-e'},
+                     conditions: ['can_do_anything']
+                   }
+        response = post(create_url, req_body)
+
+        # Get the activate URL
+        drd = parse_hale(response.body)
+        deactivate_url = "#{get_transition_uri(drd, "deactivate")}.hale_json"
+
+        # Deactivate twice.
+        put deactivate_url
+        response = put deactivate_url
+        expect(response.status).to eq(204)
+
+        # Verify
+        response = get "#{get_transition_uri(drd, "self")}.hale_json", can_do_hash
+        expect(parse_hale(response.body).properties['status']).to eq('deactivated')
+
+        # Destroy our drd
+        delete "#{get_transition_uri(drd, "delete")}.hale_json"
       end
     end
   end
