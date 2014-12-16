@@ -35,6 +35,12 @@ class DrdsController < ApplicationController
     respond_with(@drd, options)
   end
 
+  def create
+    @drd = Drd.create!(drd_params)
+
+    respond_with(@drd, options)
+  end
+
   private
 
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
@@ -44,6 +50,10 @@ class DrdsController < ApplicationController
 
   def filtering_params(params)
     params.slice(:status)
+  end
+
+  def drd_params
+    params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
   end
 
 end

@@ -7,6 +7,8 @@ class Drd < ActiveRecord::Base
   scope :status, -> (status) { where status: status }
 
   validates :name, :status, presence: true
+  validates :name, length: { maximum: 50 }
+  validates :status, inclusion: { in: %w(activated deactivated) }
 
   def activate
     self.status = 'activated'
