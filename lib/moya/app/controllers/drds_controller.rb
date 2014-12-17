@@ -58,7 +58,7 @@ class DrdsController < ApplicationController
     @drd = get_drd
     @drd.destroy!
 
-    respond_with(@drd, options)
+    render text: "", status: :no_content
   end
 
   private
