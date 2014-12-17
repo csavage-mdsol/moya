@@ -79,11 +79,30 @@ RSpec.describe Moya do
       xit 'responds to an update call' do
       end
 
-      xit 'responds to a destroy call' do
+      it 'responds to a destroy call' do
+        # Create a drd
+        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
+                     conditions: ['can_do_anything']
+                   }
+        response = post create_url, req_body
+
+        #Make sure it is there
+        self_url = "#{get_transition_uri(parse_hale(response.body), "self")}.hale_json"
+        response = get self_url, can_do_hash
+        expect(response.status).to eq(200)
+
+        #blow it up
+        destroy_url = "#{get_transition_uri(parse_hale(response.body), "delete")}.hale_json"
+        response = delete destroy_url
+        expect(response.status).to eq(204)
+
+        # make sure it is gone
+        response = get self_url
+        expect(response.status).to eq(404)
       end
 
       it 'responds idempotently to an activate call' do
-        # Create deactivated drd
+        # Create activated drd
         req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
                      conditions: ['can_do_anything']
                    }
