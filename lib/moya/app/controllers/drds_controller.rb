@@ -29,8 +29,7 @@ class DrdsController < ApplicationController
   end
 
   def show
-    #TODO Fix this.  Gross.
-    @drd = Drd.find(UUIDTools::UUID.parse(params[:id]))
+    @drd = get_drd
 
     respond_with(@drd, options)
   end
@@ -78,6 +77,7 @@ class DrdsController < ApplicationController
   end
 
   def get_drd
+    # TODO: Fix this.  Gross.
     Drd.find(UUIDTools::UUID.parse(params[:id]))
   end
 
