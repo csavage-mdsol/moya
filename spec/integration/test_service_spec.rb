@@ -1,6 +1,4 @@
-require 'faraday'
 require 'moya'
-require 'representors'
 
 RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
@@ -62,12 +60,15 @@ RSpec.describe Moya do
       end
 
       it 'responds appropriately to a drd create call specifying all permissible attributes' do
-        response = post(create_url, drd_hash)
+        response = post(create_url, drd_hash.merge(can_do_hash))
         expect(response.status).to eq(201)
 
-        drd = Representors::HaleDeserializer.new(response.body).to_representor
-        self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
-        expect(conn.get(self_url).status).to eq(200)
+        drd = parse_hale(response.body)
+        self_url = hale_url_for("self",drd)
+        expect( get(self_url).status).to eq(200)
+
+        # clean up after ourselves
+        delete hale_url_for("delete", drd)
       end
 
       # TODO: fix this, it is responding 201
@@ -81,10 +82,7 @@ RSpec.describe Moya do
 
       it 'responds to a destroy call' do
         # Create a drd
-        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
-                     conditions: ['can_do_anything']
-                   }
-        response = post create_url, req_body
+        response = post create_url, drd_hash
 
         #Make sure it is there
         self_url = hale_url_for("self", parse_hale(response.body))

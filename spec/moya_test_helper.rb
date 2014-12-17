@@ -1,3 +1,6 @@
+require 'representors'
+require 'faraday'
+
 # Helper methods
 module MoyaTestHelper
   def conn
