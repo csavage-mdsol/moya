@@ -1,4 +1,5 @@
 require 'moya'
+require 'active_support'
 
 RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
@@ -19,7 +20,7 @@ RSpec.describe Moya do
       let(:drd_hash) {
           { drd: { name: 'Pike',
             status: 'activated',
-            kind: 'Roll-e',
+            kind: 'standard',
             leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
             leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
           }
@@ -77,7 +78,28 @@ RSpec.describe Moya do
         expect(response.status).to eq(422)
       end
 
-      xit 'responds to an update call' do
+      it 'responds appropirately to an update call with all permissible attributes' do
+        # Create a drd
+        response = post create_url, drd_hash.merge(can_do_hash)
+        drd = parse_hale(response.body)
+
+        # Update the drd with all permissible attributes
+        expect(drd.properties['name']).to eq('Pike')
+        properties = { 'status' => 'deactivated',
+                       'old_status' => 'activated',
+                       'kind' => 'sentinel',
+                       'size' => 'medium',
+                       'location' => 'Mars',
+                       'location_detail' => 'Olympus Mons',
+                       'destroyed_status' => true
+                     }
+        response = put hale_url_for("update", drd), { drd: properties }
+
+        # Check that it is really updated
+        response = get hale_url_for("self", drd)
+        drd = parse_hale(response.body)
+
+        expect(drd.properties.slice(*properties.keys)).to eq(properties)
       end
 
       it 'responds to a destroy call' do
