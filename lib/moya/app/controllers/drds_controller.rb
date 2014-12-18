@@ -40,6 +40,13 @@ class DrdsController < ApplicationController
     respond_with(@drd, options)
   end
 
+  def update
+    @drd = get_drd
+    @drd.update!(drd_update_params)
+
+    respond_with(@drd, options)
+  end
+
   def activate
     @drd = get_drd
     @drd.activate!
@@ -75,6 +82,10 @@ class DrdsController < ApplicationController
 
   def drd_params
     params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
+  end
+
+  def drd_update_params
+    params.require(:drd).permit(:status, :old_status, :kind, :size, :location, :location_detail, :destroyed_status)
   end
 
   def get_drd
