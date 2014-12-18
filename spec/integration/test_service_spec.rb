@@ -21,7 +21,7 @@ RSpec.describe Moya do
       let(:drd_hash) {
           { drd: { name: 'Pike',
             status: 'activated',
-            kind: 'Roll-e',
+            kind: 'standard',
             leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
             leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
           }
