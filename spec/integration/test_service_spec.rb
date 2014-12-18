@@ -94,6 +94,7 @@ RSpec.describe Moya do
                        'destroyed_status' => true
                      }
         response = put hale_url_for("update", drd), { drd: properties }
+        expect(response.status).to eq(303)
 
         # Check that it is really updated
         response = get hale_url_for("self", drd)
