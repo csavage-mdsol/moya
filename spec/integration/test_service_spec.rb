@@ -84,9 +84,7 @@ RSpec.describe Moya do
 
       it 'responds idempotently to an activate call' do
         # Create deactivated drd
-        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
-                     conditions: ['can_do_anything']
-                   }
+        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL
@@ -108,9 +106,7 @@ RSpec.describe Moya do
 
       it 'responds idempotently to a deactivate call' do
         # Create deactivated drd
-        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'Roll-e'},
-                     conditions: ['can_do_anything']
-                   }
+        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'standard'}}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL
