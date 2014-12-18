@@ -44,7 +44,7 @@ class DrdsController < ApplicationController
     @drd = get_drd
     @drd.update!(drd_update_params)
 
-    respond_with(@drd, options)
+    redirect_to url_for(@drd), status: :see_other
   end
 
   def activate
