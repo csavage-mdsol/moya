@@ -1,10 +1,13 @@
 require 'pry'
 require 'moya'
+require 'moya_test_helper'
 
-ROOT_URL = "http://localhost:1234"
 SPEC_DIR = File.expand_path("..", __FILE__)
 
 RSpec.configure do |config|
+
+  config.include MoyaTestHelper
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

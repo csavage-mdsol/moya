@@ -10,13 +10,13 @@ class Drd < ActiveRecord::Base
   validates :name, length: { maximum: 50 }
   validates :status, inclusion: { in: %w(activated deactivated) }
 
-  def activate
+  def activate!
     self.status = 'activated'
-    save
+    save!
   end
 
-  def deactivate
+  def deactivate!
     self.status = 'deactivated'
-    save
+    save!
   end
 end

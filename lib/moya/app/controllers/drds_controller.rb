@@ -29,14 +29,34 @@ class DrdsController < ApplicationController
   end
 
   def show
-    #TODO Fix this.  Gross.
-    @drd = Drd.find(UUIDTools::UUID.parse(params[:id]))
+    @drd = get_drd
 
     respond_with(@drd, options)
   end
 
   def create
     @drd = Drd.create!(drd_params)
+
+    respond_with(@drd, options)
+  end
+
+  def activate
+    @drd = get_drd
+    @drd.activate!
+
+    respond_with(@drd, options)
+  end
+
+  def deactivate
+    @drd = get_drd
+    @drd.deactivate!
+
+    respond_with(@drd, options)
+  end
+
+  def destroy
+    @drd = get_drd
+    @drd.destroy!
 
     respond_with(@drd, options)
   end
@@ -54,6 +74,11 @@ class DrdsController < ApplicationController
 
   def drd_params
     params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
+  end
+
+  def get_drd
+    # TODO: Fix this.  Gross.
+    Drd.find(UUIDTools::UUID.parse(params[:id]))
   end
 
 end
