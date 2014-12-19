@@ -42,6 +42,7 @@ class DrdsController < ApplicationController
   def update
     @drd.update!(drd_update_params)
 
+    # TODO: Write and respond with a redirect object
     redirect_to url_for(@drd), status: :see_other
   end
 
