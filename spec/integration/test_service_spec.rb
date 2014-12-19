@@ -79,7 +79,24 @@ RSpec.describe Moya do
       xit 'responds to an update call' do
       end
 
-      xit 'responds to a destroy call' do
+      it 'responds to a destroy call' do
+        # Create a drd
+        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'} }.merge(can_do_hash)
+        response = post create_url, req_body
+
+        #Make sure it is there
+        self_url = hale_url_for("self", parse_hale(response.body))
+        response = get self_url, can_do_hash
+        expect(response.status).to eq(200)
+
+        #blow it up
+        destroy_url = hale_url_for("delete", parse_hale(response.body))
+        response = delete destroy_url
+        expect(response.status).to eq(204)
+
+        # make sure it is gone
+        response = get self_url
+        expect(response.status).to eq(404)
       end
 
       it 'responds idempotently to an activate call' do
@@ -97,11 +114,11 @@ RSpec.describe Moya do
         expect(response.status).to eq(204)
 
         # Verify
-        response = get "#{get_transition_uri(drd, "self")}.hale_json", can_do_hash
+        response = get hale_url_for("self", drd), can_do_hash
         expect(parse_hale(response.body).properties['status']).to eq('activated')
 
         # Destroy our drd
-        delete "#{get_transition_uri(drd, "delete")}.hale_json"
+        delete hale_url_for("delete", drd)
       end
 
       it 'responds idempotently to a deactivate call' do
@@ -111,7 +128,7 @@ RSpec.describe Moya do
 
         # Get the activate URL
         drd = parse_hale(response.body)
-        deactivate_url = "#{get_transition_uri(drd, "deactivate")}.hale_json"
+        deactivate_url = hale_url_for("deactivate", drd)
 
         # Deactivate twice.
         put deactivate_url
@@ -119,11 +136,11 @@ RSpec.describe Moya do
         expect(response.status).to eq(204)
 
         # Verify
-        response = get "#{get_transition_uri(drd, "self")}.hale_json", can_do_hash
+        response = get hale_url_for("self", drd), can_do_hash
         expect(parse_hale(response.body).properties['status']).to eq('deactivated')
 
         # Destroy our drd
-        delete "#{get_transition_uri(drd, "delete")}.hale_json"
+        delete hale_url_for("delete", drd)
       end
     end
   end

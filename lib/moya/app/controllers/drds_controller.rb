@@ -58,7 +58,8 @@ class DrdsController < ApplicationController
     @drd = get_drd
     @drd.destroy!
 
-    respond_with(@drd, options)
+    # Rails render no content still returns a 1 space body, this ensures no body
+    render text: "", status: :no_content
   end
 
   private

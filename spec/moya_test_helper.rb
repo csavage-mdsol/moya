@@ -44,4 +44,8 @@ module MoyaTestHelper
   def get_transition_uri(representor, transition)
     "#{representor.transitions.find { |tran| tran.rel == transition}.uri }"
   end
+
+  def hale_url_for(transition, representor)
+    "#{get_transition_uri(representor, transition)}.hale_json"
+  end
 end
