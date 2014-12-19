@@ -20,7 +20,7 @@ RSpec.describe Moya do
       let(:drd_hash) {
           { drd: { name: 'Pike',
             status: 'activated',
-            kind: 'Roll-e',
+            kind: 'standard',
             leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
             leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
           }
@@ -123,10 +123,8 @@ RSpec.describe Moya do
       end
 
       it 'responds idempotently to an activate call' do
-        # Create activated drd
-        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'Roll-e'},
-                     conditions: ['can_do_anything']
-                   }
+        # Create deactivated drd
+        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL
@@ -148,9 +146,7 @@ RSpec.describe Moya do
 
       it 'responds idempotently to a deactivate call' do
         # Create deactivated drd
-        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'Roll-e'},
-                     conditions: ['can_do_anything']
-                   }
+        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'standard'}}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL

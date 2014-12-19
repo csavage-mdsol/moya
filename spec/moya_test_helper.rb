@@ -7,6 +7,7 @@ module MoyaTestHelper
     @connection ||= Faraday.new(root_url)
   end
 
+  # Return the representor of the drds collection entry point, with the conditions can_do_anything
   def drds
     parse_hale(conn.get('/drds.hale_json', conditions: ["can_do_anything"]).body)
   end
@@ -33,6 +34,7 @@ module MoyaTestHelper
     conn.delete(url)
   end
 
+  # Return the Representor for the provided hale body
   def parse_hale(body)
     Representors::HaleDeserializer.new(body).to_representor
   end
@@ -41,6 +43,7 @@ module MoyaTestHelper
     "http://localhost:1234"
   end
 
+  # Given a representor and a transition, return the uri of that transition
   def get_transition_uri(representor, transition)
     "#{representor.transitions.find { |tran| tran.rel == transition}.uri }"
   end
