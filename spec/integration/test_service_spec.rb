@@ -46,8 +46,8 @@ RSpec.describe Moya do
       end
 
       it 'responds appropriately to a drd show call' do
-        show_url = drds.transitions.find { |tran| tran.rel == "items" }.uri
-        expect(conn.get("#{show_url}.hale_json").status).to eq(200)
+        show_url = hale_url_for("self", drds.embedded["items"].sample)
+        expect(get(show_url).status).to eq(200)
       end
 
       it 'responds appropriately to a drd create call specifying only name and status' do
@@ -56,8 +56,8 @@ RSpec.describe Moya do
         expect(response.status).to eq(201)
 
         drd = parse_hale(response.body)
-        self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
-        expect(conn.get(self_url).status).to eq(200)
+        self_url = hale_url_for("self", drd)
+        expect(get(self_url).status).to eq(200)
       end
 
       it 'responds appropriately to a drd create call specifying all permissible attributes' do
@@ -171,7 +171,7 @@ RSpec.describe Moya do
   context 'when provided an initializer directory' do
     it 'executes the initialization code' do
       pid = Moya.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
-      expect(conn.get('/').body).to eq("Alive!")
+      expect(get('/').body).to eq("Alive!")
       Process.kill(:INT, pid)
     end
   end
