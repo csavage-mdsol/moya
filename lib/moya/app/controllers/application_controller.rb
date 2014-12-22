@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
     error_cause = ERROR_CAUSE[e.class] || :unprocessable_entity
     hyper_error = HyperError.new( title: e.message,
                                   details: '',
-
                                   error_code: error_cause,
                                   http_status: Rack::Utils.status_code(error_cause),
                                   stack_trace: e.backtrace.first,
