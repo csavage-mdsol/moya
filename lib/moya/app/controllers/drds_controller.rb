@@ -1,7 +1,6 @@
 require 'drds_decorator'
 
 class DrdsController < ApplicationController
-  respond_to :hale_json
   before_filter :get_drd, except: [:index, :create]
 
   OPTIONS_KEYS = [ :conditions,
