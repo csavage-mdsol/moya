@@ -17,6 +17,19 @@ RSpec.describe Moya do
 
       let(:can_do_hash) { {conditions: ['can_do_anything']} }
       let(:create_url) { "#{get_transition_uri(drds, 'create')}.hale_json" }
+      let(:drd_properties) { [ 'id',
+                               'name',
+                               'status',
+                               'old_status',
+                               'kind',
+                               'size',
+                               'leviathan_uuid',
+                               'created_at',
+                               'location',
+                               'location_detail',
+                               'destroyed_status'
+                             ] }
+      let(:error_properties) { ['details', 'error_code', 'http_status', 'stack_trace', 'title'] }
       let(:drd_hash) {
           { drd: { name: 'Pike',
             status: 'activated',
@@ -48,6 +61,21 @@ RSpec.describe Moya do
       it 'responds appropriately to a drd show call' do
         show_url = hale_url_for("self", drds.embedded["items"].sample)
         expect(get(show_url).status).to eq(200)
+      end
+
+      it 'returns the appropriate attributes for a drd show call' do
+        show_url = hale_url_for("self", drds.embedded["items"].sample)
+        drd = parse_hale(get(show_url).body)
+        expect(drd.properties.keys).to match_array(drd_properties)
+      end
+
+      it 'returns an appropriate 404 response for an unkown drd' do
+        show_url = hale_url_for("self", drds.embedded["items"].sample)
+        bad_show_url = "#{show_url[0...-46]}#{SecureRandom.uuid}.hale_json"
+
+        response = get bad_show_url
+        expect(response.status).to eq(404)
+        expect(parse_hale(response.body).properties.keys).to match_array(error_properties)
       end
 
       it 'responds appropriately to a drd create call specifying only name and status' do
