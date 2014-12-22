@@ -71,7 +71,7 @@ semantics:
     doc: The UUID of the creator Leviathan.
     href: http://alps.io/schema.org/Text
     sample: 1234-5678-9abc-def1
-  destroyed:
+  destroyed_status:
     doc: This DRD has been destroyed
     href: http://alps.io/schema.org/Boolean
     sample: destroyed
@@ -177,7 +177,7 @@ idempotent:
             source: http://crichton.example.com/drd_location_detail_list#items
             target: location_detail_id
             prompt: location_detail_text
-      - href: destroyed
+      - href: destroyed_status
         field_type: boolean
 
 unsafe:
@@ -268,7 +268,7 @@ resources:
       - href: leviathan
       - href: location
       - href: location_detail
-      - href: destroyed
+      - href: destroyed_status
       - href: show
       - href: activate
       - href: deactivate

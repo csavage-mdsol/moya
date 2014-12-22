@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141208231338) do
+ActiveRecord::Schema.define(version: 20141217230849) do
 
   create_table "drds", force: true do |t|
     t.string   "name"
@@ -21,6 +21,12 @@ ActiveRecord::Schema.define(version: 20141208231338) do
     t.string   "leviathan_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "old_status"
+    t.string   "size"
+    t.string   "location"
+    t.string   "location_detail"
+    t.boolean  "destroyed_status",   default: false
+    t.string   "repair_history_url"
   end
 
   add_index "drds", ["id"], name: "sqlite_autoindex_drds_1", unique: true

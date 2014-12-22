@@ -1,6 +1,5 @@
-require 'faraday'
 require 'moya'
-require 'representors'
+require 'active_support'
 
 RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
@@ -62,12 +61,15 @@ RSpec.describe Moya do
       end
 
       it 'responds appropriately to a drd create call specifying all permissible attributes' do
-        response = post(create_url, drd_hash)
+        response = post(create_url, drd_hash.merge(can_do_hash))
         expect(response.status).to eq(201)
 
-        drd = Representors::HaleDeserializer.new(response.body).to_representor
-        self_url = drd.transitions.find { |tran| tran.rel == "self" }.uri
-        expect(conn.get(self_url).status).to eq(200)
+        drd = parse_hale(response.body)
+        self_url = hale_url_for("self",drd)
+        expect( get(self_url).status).to eq(200)
+
+        # clean up after ourselves
+        delete hale_url_for("delete", drd)
       end
 
       # TODO: fix this, it is responding 201
@@ -76,13 +78,34 @@ RSpec.describe Moya do
         expect(response.status).to eq(422)
       end
 
-      xit 'responds to an update call' do
+      it 'responds appropirately to an update call with all permissible attributes' do
+        # Create a drd
+        response = post create_url, drd_hash.merge(can_do_hash)
+        drd = parse_hale(response.body)
+
+        # Update the drd with all permissible attributes
+        expect(drd.properties['name']).to eq('Pike')
+        properties = { 'status' => 'deactivated',
+                       'old_status' => 'activated',
+                       'kind' => 'sentinel',
+                       'size' => 'medium',
+                       'location' => 'Mars',
+                       'location_detail' => 'Olympus Mons',
+                       'destroyed_status' => true
+                     }
+        response = put hale_url_for("update", drd), { drd: properties }
+        expect(response.status).to eq(303)
+
+        # Check that it is really updated
+        response = get hale_url_for("self", drd)
+        drd = parse_hale(response.body)
+
+        expect(drd.properties.slice(*properties.keys)).to eq(properties)
       end
 
       it 'responds to a destroy call' do
         # Create a drd
-        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'} }.merge(can_do_hash)
-        response = post create_url, req_body
+        response = post create_url, drd_hash
 
         #Make sure it is there
         self_url = hale_url_for("self", parse_hale(response.body))

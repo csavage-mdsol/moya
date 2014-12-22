@@ -2,6 +2,7 @@ require 'drds_decorator'
 
 class DrdsController < ApplicationController
   respond_to :hale_json
+  before_filter :get_drd, except: [:index, :create]
 
   OPTIONS_KEYS = [ :conditions,
     :except,
@@ -29,8 +30,6 @@ class DrdsController < ApplicationController
   end
 
   def show
-    @drd = get_drd
-
     respond_with(@drd, options)
   end
 
@@ -40,22 +39,26 @@ class DrdsController < ApplicationController
     respond_with(@drd, options)
   end
 
+  def update
+    @drd.update!(drd_update_params)
+
+    # TODO: Write and respond with a redirect object
+    redirect_to url_for(@drd), status: :see_other
+  end
+
   def activate
-    @drd = get_drd
     @drd.activate!
 
     respond_with(@drd, options)
   end
 
   def deactivate
-    @drd = get_drd
     @drd.deactivate!
 
     respond_with(@drd, options)
   end
 
   def destroy
-    @drd = get_drd
     @drd.destroy!
 
     # Rails render no content still returns a 1 space body, this ensures no body
@@ -77,9 +80,13 @@ class DrdsController < ApplicationController
     params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
   end
 
+  def drd_update_params
+    params.require(:drd).permit(:status, :old_status, :kind, :size, :location, :location_detail, :destroyed_status)
+  end
+
   def get_drd
     # TODO: Fix this.  Gross.
-    Drd.find(UUIDTools::UUID.parse(params[:id]))
+    @drd = Drd.find(UUIDTools::UUID.parse(params[:id]))
   end
 
 end
