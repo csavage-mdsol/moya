@@ -30,6 +30,13 @@ semantics:
     doc: How is the DRD.
     href: http://alps.io/schema.org/Text
     sample: renegade
+    options:
+      id: drd_status_options
+      hash:
+        active: activated
+        inactive: deactivated
+        unknown: renegade
+    field_type: select
   old_status:
     doc: How was the DRD before the last change
     href: http://alps.io/schema.org/Text
@@ -98,14 +105,7 @@ safe:
     doc: Returns a list of DRDs that satisfy the search term.
     rt: drds
     parameters:
-      - href: term
-        name: search_term
-        field_type: text
-      - href: name
-        name: search_name
-        field_type: text
-        sample: drdname
-
+      - href: status
   show:
     doc: Shows a particular DRD.
     rt: drd
@@ -141,12 +141,6 @@ idempotent:
         field_type: select
         validators:
           - required
-        options:
-          id: drd_status_options
-          hash:
-            active: activated
-            inactive: deactivated
-            unknown: renegade
       - href: old_status
         field_type: select
         validators:
