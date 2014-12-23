@@ -6,15 +6,6 @@ RSpec.describe Moya do
   # rails process for each one.
   context "When the service is running" do
     context "When requesting hale json" do
-      before(:all) do
-        old_handler = trap(:INT) {
-          Process.kill(:INT, @rails_pid) if @rails_pid
-          old_handler.call if old_handler.respond_to?(:call)
-        }
-        @rails_pid = Moya.spawn_rails_process!(port = 1234)
-      end
-      after(:all) { Process.kill(:INT, @rails_pid) if @rails_pid }
-
       let(:can_do_hash) { {conditions: ['can_do_anything']} }
       let(:create_url) { "#{get_transition_uri(drds, 'create')}.hale_json" }
       let(:drd_properties) { [ 'id',
@@ -193,14 +184,6 @@ RSpec.describe Moya do
         # Destroy our drd
         delete hale_url_for("delete", drd)
       end
-    end
-  end
-
-  context 'when provided an initializer directory' do
-    it 'executes the initialization code' do
-      pid = Moya.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
-      expect(get('/').body).to eq("Alive!")
-      Process.kill(:INT, pid)
     end
   end
 end
