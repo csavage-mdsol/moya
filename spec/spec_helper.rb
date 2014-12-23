@@ -1,6 +1,7 @@
 require 'pry'
 require 'moya'
 require 'moya_test_helper'
+require 'active_support'
 
 SPEC_DIR = File.expand_path("..", __FILE__)
 

@@ -1,6 +1,3 @@
-require 'moya'
-require 'active_support'
-
 RSpec.describe Moya do
   # NB: Do not use any additional nested context blocks unless you want to spin up a
   # rails process for each one.
@@ -35,19 +32,6 @@ RSpec.describe Moya do
         expect(get('/').status).to eq(200)
       end
 
-      it 'responds appropriately to a drd index call' do
-        expect(get('/drds.hale_json').status).to eq(200)
-      end
-
-      it 'includes transitions when conditions are met' do
-        response = get('/drds.hale_json', { conditions: ["can_create"] })
-        expect(JSON.parse(response.body)["_links"]).to have_key("create")
-      end
-
-      it 'filters out available transitions for unmet conditions' do
-        response = get('/drds.hale_json', { conditions: [] })
-        expect(JSON.parse(response.body)["_links"]).to_not have_key("create")
-      end
 
       it 'responds appropriately to a drd show call' do
         show_url = hale_url_for("self", drds.embedded["items"].sample)
