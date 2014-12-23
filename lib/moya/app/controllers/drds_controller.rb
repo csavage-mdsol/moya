@@ -17,8 +17,8 @@ class DrdsController < ApplicationController
   def index
     @drds = Drd.all
 
-    filtering_params(params).each do |k,v|
-      @drds = @drds.public_send(key, value) if value.present?
+    index_params.each do |k,v|
+      @drds = @drds.public_send(k, v) if v.present?
     end
 
     # TODO: Fix this in Crichton.
@@ -33,13 +33,13 @@ class DrdsController < ApplicationController
   end
 
   def create
-    @drd = Drd.create!(drd_params)
+    @drd = Drd.create!(create_params)
 
     respond_with(@drd, options)
   end
 
   def update
-    @drd.update!(drd_update_params)
+    @drd.update!(update_params)
 
     # TODO: Write and respond with a redirect object
     redirect_to url_for(@drd), status: :see_other
@@ -71,15 +71,15 @@ class DrdsController < ApplicationController
     params.slice(*OPTIONS_KEYS).symbolize_keys
   end
 
-  def filtering_params(params)
-    params.slice(:status)
+  def index_params
+    params.permit(:status)
   end
 
-  def drd_params
+  def create_params
     params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
   end
 
-  def drd_update_params
+  def update_params
     params.require(:drd).permit(:status, :old_status, :kind, :size, :location, :location_detail, :destroyed_status)
   end
 
