@@ -27,11 +27,4 @@ RSpec.describe Moya do
     expect(get('/').body).to eq("Alive!")
     Process.kill(:INT, pid)
   end
-
-  it 'executes the initialization code' do
-    pid = Moya.spawn_rails_process!(1234, "#{SPEC_DIR}/fixtures" )
-    expect(get('/').body).to eq("Alive!")
-    Process.kill(:INT, pid)
-  end
-
 end
