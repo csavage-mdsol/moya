@@ -2,6 +2,7 @@ require 'pry'
 require 'moya'
 require 'moya_test_helper'
 require 'active_support'
+require 'integration/hale_shared_context'
 
 SPEC_DIR = File.expand_path("..", __FILE__)
 

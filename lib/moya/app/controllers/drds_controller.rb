@@ -76,7 +76,7 @@ class DrdsController < ApplicationController
   end
 
   def create_params
-    params.require(:drd).permit(:name, :status, :kind, :leviathan_uuid, :leviathan_url)
+    params.require(:drd).permit(:name, :status, :old_status, :kind, :leviathan_uuid, :leviathan_url)
   end
 
   def update_params

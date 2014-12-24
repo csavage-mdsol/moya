@@ -3,30 +3,7 @@ RSpec.describe Moya do
   # rails process for each one.
   context "When the service is running" do
     context "When requesting hale json" do
-      let(:can_do_hash) { {conditions: ['can_do_anything']} }
-      let(:create_url) { "#{get_transition_uri(drds, 'create')}.hale_json" }
-      let(:drd_properties) { [ 'id',
-                               'name',
-                               'status',
-                               'old_status',
-                               'kind',
-                               'size',
-                               'leviathan_uuid',
-                               'created_at',
-                               'location',
-                               'location_detail',
-                               'destroyed_status'
-                             ] }
-      let(:error_properties) { ['details', 'error_code', 'http_status', 'stack_trace', 'title'] }
-      let(:drd_hash) {
-          { drd: { name: 'Pike',
-            status: 'activated',
-            kind: 'standard',
-            leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
-            leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
-          }
-        }
-      }
+      include_context 'shared drd hale context'
 
       it 'responds appropriately to root' do
         expect(get('/').status).to eq(200)
@@ -51,34 +28,6 @@ RSpec.describe Moya do
         response = get bad_show_url
         expect(response.status).to eq(404)
         expect(parse_hale(response.body).properties.keys).to match_array(error_properties)
-      end
-
-      it 'responds appropriately to a drd create call specifying only name and status' do
-        response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
-
-        expect(response.status).to eq(201)
-
-        drd = parse_hale(response.body)
-        self_url = hale_url_for("self", drd)
-        expect(get(self_url).status).to eq(200)
-      end
-
-      it 'responds appropriately to a drd create call specifying all permissible attributes' do
-        response = post(create_url, drd_hash.merge(can_do_hash))
-        expect(response.status).to eq(201)
-
-        drd = parse_hale(response.body)
-        self_url = hale_url_for("self",drd)
-        expect( get(self_url).status).to eq(200)
-
-        # clean up after ourselves
-        delete hale_url_for("delete", drd)
-      end
-
-      # TODO: fix this, it is responding 201
-      xit 'responds with an error to a drd create call not specifying a name' do
-        response = conn.post create_url, {}
-        expect(response.status).to eq(422)
       end
 
       it 'responds appropirately to an update call with all permissible attributes' do
