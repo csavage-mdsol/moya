@@ -30,34 +30,6 @@ RSpec.describe Moya do
         expect(parse_hale(response.body).properties.keys).to match_array(error_properties)
       end
 
-      it 'responds appropriately to a drd create call specifying only name and status' do
-        response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
-
-        expect(response.status).to eq(201)
-
-        drd = parse_hale(response.body)
-        self_url = hale_url_for("self", drd)
-        expect(get(self_url).status).to eq(200)
-      end
-
-      it 'responds appropriately to a drd create call specifying all permissible attributes' do
-        response = post(create_url, drd_hash.merge(can_do_hash))
-        expect(response.status).to eq(201)
-
-        drd = parse_hale(response.body)
-        self_url = hale_url_for("self",drd)
-        expect( get(self_url).status).to eq(200)
-
-        # clean up after ourselves
-        delete hale_url_for("delete", drd)
-      end
-
-      # TODO: fix this, it is responding 201
-      xit 'responds with an error to a drd create call not specifying a name' do
-        response = conn.post create_url, {}
-        expect(response.status).to eq(422)
-      end
-
       it 'responds appropirately to an update call with all permissible attributes' do
         # Create a drd
         response = post create_url, drd_hash.merge(can_do_hash)

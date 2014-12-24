@@ -20,23 +20,54 @@ RSpec.describe Moya do
 
         it 'responds with an error when provided a name that is greater than 50 characters' do
           response = post create_url, { drd: {name: "a"*51, status: 'activated' } }
+          error = parse_hale(response.body)
           expect(response.status).to eq(422)
-          expect(parse_hale(response.body).properties.keys).to match_array(error_properties)
+          expect(error.properties.keys).to match_array(error_properties)
+          expect(error.properties['title']).to eq("ActiveRecord::RecordInvalid")
         end
 
-        xit 'responds with an error when provided an unrecognized status' do
+        it 'responds with an error when provided an unrecognized status' do
+          response = post create_url, { drd: {name: 'Pike', status: 'bad status'} }
+          error = parse_hale(response.body)
+          expect(response.status).to eq(422)
+          expect(error.properties.keys).to match_array(error_properties)
+          expect(error.properties['title']).to eq('ActiveRecord::RecordInvalid')
         end
 
-        xit 'responds with an error when provided an unrecognized old status' do
+        it 'responds with an error when provided an unrecognized old status' do
+          response = post create_url, { drd: {name: 'Pike', status: 'activated', old_status: 'bad status'} }
+          error = parse_hale(response.body)
+          expect(response.status).to eq(422)
+          expect(error.properties.keys).to match_array(error_properties)
+          expect(error.properties['title']).to eq('ActiveRecord::RecordInvalid')
         end
 
-        xit 'responds appropriately to a drd create call specifying all permissible attributes' do
+        it 'responds appropriately to a drd create call specifying all permissible attributes' do
+          response = post create_url, drd_hash.merge(can_do_hash)
+          expect(response.status).to eq(201)
+
+          drd = parse_hale(response.body)
+          self_url = hale_url_for("self",drd)
+          expect(get(self_url).status).to eq(200)
+
+          # clean up after ourselves
+          delete hale_url_for("delete", drd)
         end
 
-        xit 'responds appropriately to a create call missing required attributes' do
+        it 'responds appropriately to a create call missing a name attribute' do
+          response = post create_url, { drd: {status: 'activated'} }
+          error = parse_hale(response.body)
+          expect(response.status).to eq(422)
+          expect(error.properties.keys).to match_array(error_properties)
+          expect(error.properties['title']).to eq('ActiveRecord::RecordInvalid')
         end
 
-        xit 'responds appropraitely to a create call with unpermitted attributes' do
+        it 'responds appropriately to a create call missing a status attribute' do
+          response = post create_url, { drd: {name: 'Pike'} }
+          error = parse_hale(response.body)
+          expect(response.status).to eq(422)
+          expect(error.properties.keys).to match_array(error_properties)
+          expect(error.properties['title']).to eq('ActiveRecord::RecordInvalid')
         end
       end
     end
