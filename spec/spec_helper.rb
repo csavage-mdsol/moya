@@ -1,9 +1,30 @@
 require 'pry'
+require 'moya'
+require 'moya_test_helper'
+require 'active_support'
+require 'integration/hale_shared_context'
 
-ROOT_URL = "http://localhost:1234"
 SPEC_DIR = File.expand_path("..", __FILE__)
 
+
+RAILS_PORT = 1234
+
 RSpec.configure do |config|
+
+  config.include MoyaTestHelper
+
+  config.before(:suite) do
+    old_handler = trap(:INT) {
+      Process.kill(:INT, $moya_rails_pid) if $moya_rails_pid
+    }
+
+    $moya_rails_pid = Moya.spawn_rails_process!(RAILS_PORT)
+  end
+
+  config.after(:suite) do
+    Process.kill(:INT, $moya_rails_pid)
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
