@@ -18,6 +18,6 @@ class ApplicationController < ActionController::Base
                                   stack_trace: e.backtrace.first,
                                   controller: self
                                 )
-    respond_with hyper_error, status: error_cause
+    respond_with hyper_error, status: error_cause, location: hyper_error.describes_url
   end
 end
