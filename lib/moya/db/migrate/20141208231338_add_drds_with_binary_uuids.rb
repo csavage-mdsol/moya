@@ -1,4 +1,4 @@
-#TODO Either conctribute to activeuuid, or remove it
+#TODO Either contribute to activeuuid, or remove it
 require 'activeuuid'
 
 class AddDrdsWithBinaryUuids < ActiveRecord::Migration
