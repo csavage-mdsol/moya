@@ -1,3 +1,6 @@
+#TODO Either conctribute to activeuuid, or remove it
+require 'activeuuid'
+
 class AddDrdsWithBinaryUuids < ActiveRecord::Migration
   def change
     create_table :drds, id: false do |t|

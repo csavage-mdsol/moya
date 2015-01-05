@@ -1,3 +1,5 @@
+require 'activeuuid'
+
 class Drd < ActiveRecord::Base
   include ActiveUUID::UUID
   include Crichton::Representor::State

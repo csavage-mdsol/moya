@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.1'
   spec.add_development_dependency 'faraday'
   spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'activeuuid'
 
   # TODO: add dependencies on Crichton and Representors when hosted off git.
   # TODO: make it clear in README.md that this gem should only be listed as a development dependency
@@ -34,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack'
   spec.add_dependency 'nokogiri'
   spec.add_dependency 'yajl-ruby', '~> 1.2.0'
+  spec.add_dependency 'activeuuid'
 end
