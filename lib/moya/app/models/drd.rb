@@ -1,3 +1,5 @@
+require 'activeuuid'
+
 class Drd < ActiveRecord::Base
   include ActiveUUID::UUID
   include Crichton::Representor::State
@@ -8,7 +10,7 @@ class Drd < ActiveRecord::Base
     self.old_status ||= 'deactivated'
   end
 
-  scope :status, -> (status) { where status: status }
+  scope :status, ->(status) { where status: status }
 
   validates :name, :status, presence: true
   validates :name, length: { maximum: 50 }

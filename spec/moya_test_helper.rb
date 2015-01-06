@@ -12,8 +12,12 @@ module MoyaTestHelper
     parse_hale(conn.get('/drds.hale_json', conditions: ["can_do_anything"]).body)
   end
 
-  def get(url, params = {})
-    conn.get(url, params)
+  def get(url, params = {}, headers = {})
+    conn.get(url, params) do |req|
+      headers.each do |k,v|
+        req.headers[k] = v
+      end
+    end
   end
 
   def put(url, hash_body = {})
