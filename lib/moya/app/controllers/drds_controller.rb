@@ -76,11 +76,11 @@ class DrdsController < ApplicationController
   end
 
   def create_params
-    params.require(:drd).permit(:name, :status, :old_status, :kind, :leviathan_uuid, :leviathan_url)
+    params.permit(:name, :status, :old_status, :kind, :leviathan_uuid, :leviathan_url)
   end
 
   def update_params
-    params.require(:drd).permit(:status, :old_status, :kind, :size, :location, :location_detail, :destroyed_status)
+    params.permit(:status, :old_status, :kind, :size, :location, :location_detail, :destroyed_status)
   end
 
   def get_drd

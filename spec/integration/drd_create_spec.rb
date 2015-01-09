@@ -5,7 +5,7 @@ RSpec.describe Moya do
         include_context 'shared drd hale context'
 
         it 'responds appropriately to a drd create call specifying only name and status' do
-          response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
+          response = post(create_url, {name: 'Pike', status: 'activated'})
 
           expect(response.status).to eq(201)
 
@@ -19,7 +19,7 @@ RSpec.describe Moya do
         end
 
         it 'responds with an error when provided a name that is greater than 50 characters' do
-          response = post create_url, { drd: {name: "a"*51, status: 'activated' } }
+          response = post create_url, {name: "a"*51, status: 'activated' }
           error = parse_hale(response.body)
           expect(response.status).to eq(422)
           expect(error.properties.keys).to match_array(error_properties)
@@ -27,7 +27,7 @@ RSpec.describe Moya do
         end
 
         it 'responds with an error when provided an unrecognized status' do
-          response = post create_url, { drd: {name: 'Pike', status: 'bad status'} }
+          response = post create_url, {name: 'Pike', status: 'bad status'}
           error = parse_hale(response.body)
           expect(response.status).to eq(422)
           expect(error.properties.keys).to match_array(error_properties)
@@ -35,7 +35,7 @@ RSpec.describe Moya do
         end
 
         it 'responds with an error when provided an unrecognized old status' do
-          response = post create_url, { drd: {name: 'Pike', status: 'activated', old_status: 'bad status'} }
+          response = post create_url, {name: 'Pike', status: 'activated', old_status: 'bad status'}
           error = parse_hale(response.body)
           expect(response.status).to eq(422)
           expect(error.properties.keys).to match_array(error_properties)
@@ -55,7 +55,7 @@ RSpec.describe Moya do
         end
 
         it 'responds appropriately to a create call missing a name attribute' do
-          response = post create_url, { drd: {status: 'activated'} }
+          response = post create_url,  {status: 'activated'}
           error = parse_hale(response.body)
           expect(response.status).to eq(422)
           expect(error.properties.keys).to match_array(error_properties)
@@ -63,7 +63,7 @@ RSpec.describe Moya do
         end
 
         it 'responds appropriately to a create call missing a status attribute' do
-          response = post create_url, { drd: {name: 'Pike'} }
+          response = post create_url, {name: 'Pike'}
           error = parse_hale(response.body)
           expect(response.status).to eq(422)
           expect(error.properties.keys).to match_array(error_properties)

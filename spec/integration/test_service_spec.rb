@@ -45,7 +45,7 @@ RSpec.describe Moya do
                        'location_detail' => 'Olympus Mons',
                        'destroyed_status' => true
                      }
-        response = put hale_url_for("update", drd), { drd: properties }
+        response = put hale_url_for("update", drd), properties
         expect(response.status).to eq(303)
 
         # Check that it is really updated
@@ -76,7 +76,7 @@ RSpec.describe Moya do
 
       it 'responds idempotently to an activate call' do
         # Create deactivated drd
-        req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}}.merge(can_do_hash)
+        req_body = {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL
@@ -98,7 +98,7 @@ RSpec.describe Moya do
 
       it 'responds idempotently to a deactivate call' do
         # Create deactivated drd
-        req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'standard'}}.merge(can_do_hash)
+        req_body = {name: 'activated drd', status: 'activated', kind: 'standard'}.merge(can_do_hash)
         response = post(create_url, req_body)
 
         # Get the activate URL

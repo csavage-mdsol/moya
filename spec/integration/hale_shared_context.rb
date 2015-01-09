@@ -14,13 +14,12 @@ RSpec.shared_context 'shared drd hale context' do
                            'destroyed_status'
                           ] }
   let(:error_properties) { ['details', 'error_code', 'http_status', 'stack_trace', 'title'] }
-  let(:drd_hash) { { drd: { name: 'Pike',
-                            status: 'activated',
-                            old_status: 'activated',
-                            kind: 'standard',
-                            leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
-                            leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
-                          }
+  let(:drd_hash) { { name: 'Pike',
+                     status: 'activated',
+                     old_status: 'activated',
+                     kind: 'standard',
+                     leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
+                     leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
                     }
                   }
 
