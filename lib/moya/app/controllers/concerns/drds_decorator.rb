@@ -1,3 +1,4 @@
+require 'crichton'
 require 'crichton/representor'
 
 class DrdsDecorator
